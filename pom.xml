@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com</groupId>
-	<artifactId>eurder</artifactId>
+	<artifactId>eurderproject</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>eurder</name>
+	<name>eurderproject</name>
 	<description>Örder is an innovative (not really) order management application.</description>
 	<properties>
 		<java.version>21</java.version>

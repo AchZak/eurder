@@ -1,4 +1,4 @@
-package com.eurder;
+package com.eurderproject;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
