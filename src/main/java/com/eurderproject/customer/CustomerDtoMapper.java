@@ -11,12 +11,22 @@ import java.util.stream.Collectors;
 public class CustomerDtoMapper {
 
     public CustomerDto mapToDto(Customer customer) {
-        return new CustomerDto(customer.getFirstName(), customer.getLastName(), customer.getEmailAddress(), customer.getAddress(), customer.getPhoneNumber());
+        return new CustomerDto(customer.getCustomerId(), customer.getFirstName(), customer.getLastName(), customer.getEmailAddress(), customer.getAddress(), customer.getPhoneNumber());
     }
 
     public List<CustomerDto> mapToDtoList(Collection<Customer> customerList) {
         return customerList.stream()
                 .map(this::mapToDto)
                 .collect(Collectors.toList());
+    }
+
+    public Customer mapFromDto(CreateCustomerDto createCustomerDto) {
+        return new Customer(
+                createCustomerDto.firstName(),
+                createCustomerDto.lastName(),
+                createCustomerDto.emailAddress(),
+                createCustomerDto.address(),
+                createCustomerDto.phoneNumber()
+        );
     }
 }

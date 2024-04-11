@@ -18,11 +18,11 @@ public class CustomerService {
         this.customerDtoMapper = customerDtoMapper;
     }
 
-    public CustomerDto addCustomer(Customer customer) {
+    public CustomerDto addCustomer(CreateCustomerDto createCustomerDto) {
+        Customer customer = customerDtoMapper.mapFromDto(createCustomerDto);
         customerRepository.save(customer);
         return customerDtoMapper.mapToDto(customer);
     }
-
 
     // ONLY ADMINS
     public List<CustomerDto> getAllCustomers() {

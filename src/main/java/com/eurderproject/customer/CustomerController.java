@@ -1,13 +1,9 @@
 package com.eurderproject.customer;
 
-
-import com.eurderproject.exception.CustomerNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
@@ -24,7 +20,7 @@ public class CustomerController {
     }
 
     @GetMapping
-    public List<CustomerDto> getAllCustomers(){
+    public List<CustomerDto> getAllCustomers() {
         logger.info("Received request to get all customers.");
         List<CustomerDto> customers = customerService.getAllCustomers();
         logger.info("Returning " + customers.size() + " customers");
@@ -37,5 +33,14 @@ public class CustomerController {
         CustomerDto customerDto = customerService.getCustomerById(customerId);
         logger.info("Returning customer: " + customerDto);
         return customerDto;
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public CustomerDto addCustomer(@RequestBody CreateCustomerDto createCustomerDto) {
+        logger.info("Received request to add a new customer.");
+        CustomerDto addedCustomer = customerService.addCustomer(createCustomerDto);
+        logger.info("Added customer: " + addedCustomer);
+        return addedCustomer;
     }
 }
