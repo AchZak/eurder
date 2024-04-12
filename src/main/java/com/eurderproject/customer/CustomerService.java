@@ -30,8 +30,8 @@ public class CustomerService {
     }
 
     public CustomerDto getCustomerById(UUID customerId) {
-        Optional<Customer> optionalCustomer = customerRepository.findCustomerById(customerId);
-        return optionalCustomer.map(customerDtoMapper::mapToDto)
-                .orElseThrow(() -> new CustomerNotFoundException("Customer not found with ID: " + customerId));
+        Customer customer = customerRepository.findCustomerById(customerId)
+                .orElseThrow(() -> new CustomerNotFoundException("Item not found with ID: " + customerId));
+        return customerDtoMapper.mapToDto(customer);
     }
 }
