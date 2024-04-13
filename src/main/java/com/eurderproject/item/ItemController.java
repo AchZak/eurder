@@ -17,7 +17,7 @@ import java.util.UUID;
 public class ItemController {
 
     private final ItemService itemService;
-    private final Logger logger = LoggerFactory.getLogger(CustomerController.class);
+    private final Logger logger = LoggerFactory.getLogger(ItemController.class);
 
     public ItemController(ItemService itemService) {
         this.itemService = itemService;
@@ -33,19 +33,18 @@ public class ItemController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ItemDto addItem(@RequestBody CreateItemDto createItemDto) {
+    public ItemDto createItem(@RequestBody CreateItemDto createItemDto) {
         logger.info("Received request to add a new item.");
-        ItemDto addedItem = itemService.addItem(createItemDto);
-        logger.info("Added item: " + addedItem);
-        return addedItem;
+        ItemDto createdItemDto = itemService.createItem(createItemDto);
+        logger.info("Added item: " + createdItemDto);
+        return createdItemDto;
     }
 
     @PutMapping("/{itemId}")
-    public ItemDto updateItem(@PathVariable UUID itemId, @RequestBody UpdateItemDto updateItemDto){
+    public ItemDto updateItem(@PathVariable UUID itemId, @RequestBody UpdateItemDto updateItemDto) {
         logger.info("Received request to edit an item.");
         ItemDto updatedItem = itemService.updateItem(itemId, updateItemDto);
         logger.info("Updated item: " + updatedItem + " with id: " + itemId);
         return updatedItem;
     }
-
 }

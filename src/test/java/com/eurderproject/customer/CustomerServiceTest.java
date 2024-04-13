@@ -60,7 +60,7 @@ class CustomerServiceTest {
     @Test
     void givenCreateCustomerDto_whenAddingCustomer_thenCustomerAdded() {
         // Given
-        CreateCustomerDto createCustomerDto = new CreateCustomerDto("Mario", "Brothers", "mario@example.com", "123 Mushroom Kingdom", "04444");
+        CreateCustomerDto createCustomerDto = new CreateCustomerDto(null, null,"Mario", "Brothers", "mario@example.com", "123 Mushroom Kingdom", "04444");
 
         Customer customer = new Customer(createCustomerDto.firstName(), createCustomerDto.lastName(), createCustomerDto.emailAddress(), createCustomerDto.address(), createCustomerDto.phoneNumber());
         CustomerDto expectedCustomerDto = new CustomerDto(customer.getCustomerId(), customer.getFirstName(), customer.getLastName(), customer.getEmailAddress(), customer.getAddress(), customer.getPhoneNumber());
@@ -69,7 +69,7 @@ class CustomerServiceTest {
         Mockito.when(customerDtoMapper.mapToDto(customer)).thenReturn(expectedCustomerDto);
 
         // When
-        CustomerDto actualCustomerDto = customerService.addCustomer(createCustomerDto);
+        CustomerDto actualCustomerDto = customerService.createCustomer(createCustomerDto);
 
         // Then
         customerRepository.findCustomerById(actualCustomerDto.customerId());

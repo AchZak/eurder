@@ -26,7 +26,9 @@ public class CustomerDtoMapper {
                 createCustomerDto.lastName(),
                 createCustomerDto.emailAddress(),
                 createCustomerDto.address(),
-                createCustomerDto.phoneNumber()
+                createCustomerDto.phoneNumber(),
+                createCustomerDto.username(),
+                createCustomerDto.password()
         );
     }
 }

@@ -1,13 +1,9 @@
 package com.eurderproject.item;
 
-import com.eurderproject.customer.Customer;
-import com.eurderproject.customer.CustomerDto;
-import com.eurderproject.exception.CustomerNotFoundException;
 import com.eurderproject.exception.ItemNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -44,7 +40,7 @@ public class ItemService {
         return itemDtoMapper.mapToDto(existingItem);
     }
 
-    public ItemDto addItem(CreateItemDto createItemDto) {
+    public ItemDto createItem(CreateItemDto createItemDto) {
         Item item = itemDtoMapper.mapFromDto(createItemDto);
         itemRepository.save(item);
         return itemDtoMapper.mapToDto(item);
