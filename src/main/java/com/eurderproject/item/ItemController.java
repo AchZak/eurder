@@ -1,8 +1,6 @@
 package com.eurderproject.item;
 
 
-import com.eurderproject.customer.CustomerController;
-import com.eurderproject.customer.CustomerDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -33,17 +31,17 @@ public class ItemController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ItemDto createItem(@RequestBody CreateItemDto createItemDto) {
-        logger.info("Received request to add a new item.");
-        ItemDto createdItemDto = itemService.createItem(createItemDto);
-        logger.info("Added item: " + createdItemDto);
+    public ItemDto createItem(@RequestHeader("Authorization") String authorizationHeader, @RequestBody CreateItemDto createItemDto) {
+        logger.info("Received request to create a new item.");
+        ItemDto createdItemDto = itemService.createItem(authorizationHeader, createItemDto);
+        logger.info("Created item: " + createdItemDto);
         return createdItemDto;
     }
 
     @PutMapping("/{itemId}")
-    public ItemDto updateItem(@PathVariable UUID itemId, @RequestBody UpdateItemDto updateItemDto) {
+    public ItemDto updateItem(@PathVariable UUID itemId, @RequestHeader("Authorization") String authorizationHeader, @RequestBody UpdateItemDto updateItemDto) {
         logger.info("Received request to edit an item.");
-        ItemDto updatedItem = itemService.updateItem(itemId, updateItemDto);
+        ItemDto updatedItem = itemService.updateItem(authorizationHeader,itemId, updateItemDto);
         logger.info("Updated item: " + updatedItem + " with id: " + itemId);
         return updatedItem;
     }

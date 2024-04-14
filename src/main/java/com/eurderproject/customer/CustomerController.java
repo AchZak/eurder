@@ -3,10 +3,8 @@ package com.eurderproject.customer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,17 +20,14 @@ public class CustomerController {
     }
 
     @GetMapping
-    public List<CustomerDto> getAllCustomers() {
-        logger.info("Received request to get all customers.");
-        List<CustomerDto> customerDtos = customerService.getAllCustomers();
-        logger.info("Returning " + customerDtos.size() + " customers");
-        return customerDtos;
+    public List<CustomerDto> getAllCustomers(@RequestHeader("Authorization") String authorizationHeader) {
+        return customerService.getAllCustomers(authorizationHeader);
     }
 
     @GetMapping("/{customerId}")
-    public CustomerDto getCustomerById(@PathVariable UUID customerId) {
+    public CustomerDto getCustomerById(@RequestHeader("Authorization") String authorizationHeader, @PathVariable UUID customerId) {
         logger.info("Received request to get customer by ID: " + customerId);
-        CustomerDto customerDto = customerService.getCustomerById(customerId);
+        CustomerDto customerDto = customerService.getCustomerById(authorizationHeader, customerId);
         logger.info("Returning customer: " + customerDto);
         return customerDto;
     }

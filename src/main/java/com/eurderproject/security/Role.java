@@ -4,8 +4,8 @@ import java.util.List;
 
 public enum Role {
 
-    ADMIN(Permission.ADD_ITEM, Permission.UPDATE_ITEM, Permission.VIEW_ALL_CUSTOMERS, Permission.VIEW_SINGLE_CUSTOMER),
-    CUSTOMER(Permission.ORDER_ITEMS);
+    ADMIN(Permission.CREATE_ITEM, Permission.UPDATE_ITEM, Permission.VIEW_ALL_CUSTOMERS, Permission.VIEW_CUSTOMER_BY_ID),
+    CUSTOMER(Permission.CREATE_ORDER);
 
     private final List<Permission> permissions;
 

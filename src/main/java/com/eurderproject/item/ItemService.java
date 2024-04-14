@@ -1,6 +1,12 @@
 package com.eurderproject.item;
 
+import com.eurderproject.customer.CustomerService;
 import com.eurderproject.exception.ItemNotFoundException;
+import com.eurderproject.security.Permission;
+import com.eurderproject.security.SecurityService;
+import com.eurderproject.security.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,10 +17,14 @@ public class ItemService {
 
     private final ItemRepository itemRepository;
     private final ItemDtoMapper itemDtoMapper;
+    private final SecurityService securityService;
 
-    public ItemService(ItemRepository itemRepository, ItemDtoMapper itemDtoMapper) {
+    private final Logger logger = LoggerFactory.getLogger(CustomerService.class);
+
+    public ItemService(ItemRepository itemRepository, ItemDtoMapper itemDtoMapper, SecurityService securityService) {
         this.itemRepository = itemRepository;
         this.itemDtoMapper = itemDtoMapper;
+        this.securityService = securityService;
     }
 
     public List<ItemDto> getAllItems() {
@@ -27,7 +37,9 @@ public class ItemService {
         return itemDtoMapper.mapToDto(item);
     }
 
-    public ItemDto updateItem(UUID itemId, UpdateItemDto updatedItemDto) {
+    public ItemDto updateItem(String authorizationHeader, UUID itemId, UpdateItemDto updatedItemDto) {
+        User authenticatedUser = securityService.authenticate(authorizationHeader);
+        securityService.authorize(authenticatedUser, Permission.UPDATE_ITEM);
         Item existingItem = itemRepository.findItemById(itemId)
                 .orElseThrow(() -> new ItemNotFoundException("Item not found with ID: " + itemId));
 
@@ -40,9 +52,12 @@ public class ItemService {
         return itemDtoMapper.mapToDto(existingItem);
     }
 
-    public ItemDto createItem(CreateItemDto createItemDto) {
+    public ItemDto createItem(String authorizationHeader, CreateItemDto createItemDto) {
+        User authenticatedUser = securityService.authenticate(authorizationHeader);
+        securityService.authorize(authenticatedUser, Permission.CREATE_ITEM);
         Item item = itemDtoMapper.mapFromDto(createItemDto);
         itemRepository.save(item);
+        logger.info("Item created with ID: {}", item.getItemId());
         return itemDtoMapper.mapToDto(item);
     }
 }

@@ -38,9 +38,9 @@ class CustomerServiceTest {
         List<Customer> customers = Arrays.asList(customer1, customer2, customer3);
 
 
-        CustomerDto customerDto1 = new CustomerDto(customer1.getCustomerId(), customer1.getFirstName(), customer1.getLastName(), customer1.getEmailAddress(), customer1.getAddress(), customer1.getPhoneNumber());
-        CustomerDto customerDto2 = new CustomerDto(customer2.getCustomerId(), customer2.getFirstName(), customer2.getLastName(), customer2.getEmailAddress(), customer2.getAddress(), customer2.getPhoneNumber());
-        CustomerDto customerDto3 = new CustomerDto(customer3.getCustomerId(), customer3.getFirstName(), customer3.getLastName(), customer3.getEmailAddress(), customer3.getAddress(), customer3.getPhoneNumber());
+        CustomerDto customerDto1 = new CustomerDto(customer1.getUserId(), customer1.getFirstName(), customer1.getLastName(), customer1.getEmailAddress(), customer1.getAddress(), customer1.getPhoneNumber());
+        CustomerDto customerDto2 = new CustomerDto(customer2.getUserId(), customer2.getFirstName(), customer2.getLastName(), customer2.getEmailAddress(), customer2.getAddress(), customer2.getPhoneNumber());
+        CustomerDto customerDto3 = new CustomerDto(customer3.getUserId(), customer3.getFirstName(), customer3.getLastName(), customer3.getEmailAddress(), customer3.getAddress(), customer3.getPhoneNumber());
         List<CustomerDto> expectedCustomerDtos = Arrays.asList(customerDto1, customerDto2, customerDto3);
 
 
@@ -48,7 +48,7 @@ class CustomerServiceTest {
         Mockito.when(customerDtoMapper.mapToDtoList(customers)).thenReturn(expectedCustomerDtos);
 
         // When
-        List<CustomerDto> actualCustomerDtos = customerService.getAllCustomers();
+        List<CustomerDto> actualCustomerDtos = customerService.getAllCustomers("");
 
         // Then
         assertEquals(expectedCustomerDtos.size(), actualCustomerDtos.size());
@@ -60,10 +60,10 @@ class CustomerServiceTest {
     @Test
     void givenCreateCustomerDto_whenAddingCustomer_thenCustomerAdded() {
         // Given
-        CreateCustomerDto createCustomerDto = new CreateCustomerDto(null, null,"Mario", "Brothers", "mario@example.com", "123 Mushroom Kingdom", "04444");
+        CreateCustomerDto createCustomerDto = new CreateCustomerDto("Mario", "Brothers", "mario@example.com", "123 Mushroom Kingdom", "04444","mario", "test");
 
         Customer customer = new Customer(createCustomerDto.firstName(), createCustomerDto.lastName(), createCustomerDto.emailAddress(), createCustomerDto.address(), createCustomerDto.phoneNumber());
-        CustomerDto expectedCustomerDto = new CustomerDto(customer.getCustomerId(), customer.getFirstName(), customer.getLastName(), customer.getEmailAddress(), customer.getAddress(), customer.getPhoneNumber());
+        CustomerDto expectedCustomerDto = new CustomerDto(customer.getUserId(), customer.getFirstName(), customer.getLastName(), customer.getEmailAddress(), customer.getAddress(), customer.getPhoneNumber());
 
         Mockito.when(customerDtoMapper.mapFromDto(createCustomerDto)).thenReturn(customer);
         Mockito.when(customerDtoMapper.mapToDto(customer)).thenReturn(expectedCustomerDto);
@@ -83,13 +83,13 @@ class CustomerServiceTest {
     void givenExistingCustomerId_whenGetCustomerById_thenGetCustomerDto(){
         // Given
         Customer customer = new Customer("Mario", "Brothers", "mario@example.com", "123 Mushroom Kingdom", "04444");
-        CustomerDto expectedCustomerDto = new CustomerDto(customer.getCustomerId(), customer.getFirstName(), customer.getLastName(), customer.getEmailAddress(), customer.getAddress(), customer.getPhoneNumber());
+        CustomerDto expectedCustomerDto = new CustomerDto(customer.getUserId(), customer.getFirstName(), customer.getLastName(), customer.getEmailAddress(), customer.getAddress(), customer.getPhoneNumber());
 
-        Mockito.when(customerRepository.findCustomerById(customer.getCustomerId())).thenReturn(Optional.of(customer));
+        Mockito.when(customerRepository.findCustomerById(customer.getUserId())).thenReturn(Optional.of(customer));
         Mockito.when(customerDtoMapper.mapToDto(customer)).thenReturn(expectedCustomerDto);
 
         // When
-        CustomerDto actualCustomerDto = customerService.getCustomerById(customer.getCustomerId());
+        CustomerDto actualCustomerDto = customerService.getCustomerById("",customer.getUserId());
 
         // Then
         assertEquals(expectedCustomerDto, actualCustomerDto);
@@ -99,10 +99,10 @@ class CustomerServiceTest {
     void givenNonExistingCustomerId_whenGetCustomerById_thenThrowCustomerNotFoundException() {
         // Given
         Customer customer = new Customer("Mario", "Brothers", "mario@example.com", "123 Mushroom Kingdom", "04444");
-        CustomerDto expectedCustomerDto = new CustomerDto(customer.getCustomerId(), customer.getFirstName(), customer.getLastName(), customer.getEmailAddress(), customer.getAddress(), customer.getPhoneNumber());
+        CustomerDto expectedCustomerDto = new CustomerDto(customer.getUserId(), customer.getFirstName(), customer.getLastName(), customer.getEmailAddress(), customer.getAddress(), customer.getPhoneNumber());
 
         // When & Then
-        assertThrows(CustomerNotFoundException.class, () -> customerService.getCustomerById(UUID.randomUUID()));
+        assertThrows(CustomerNotFoundException.class, () -> customerService.getCustomerById("",UUID.randomUUID()));
     }
 
 }

@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 public class CustomerDtoMapper {
 
     public CustomerDto mapToDto(Customer customer) {
-        return new CustomerDto(customer.getCustomerId(), customer.getFirstName(), customer.getLastName(), customer.getEmailAddress(), customer.getAddress(), customer.getPhoneNumber());
+        return new CustomerDto(customer.getUserId(), customer.getFirstName(), customer.getLastName(), customer.getEmailAddress(), customer.getAddress(), customer.getPhoneNumber());
     }
 
     public List<CustomerDto> mapToDtoList(Collection<Customer> customerList) {

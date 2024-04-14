@@ -1,10 +1,10 @@
 package com.eurderproject.security;
 
 public enum Permission {
-    ADD_ITEM,
-    ORDER_ITEMS,
+    CREATE_ITEM,
+    CREATE_ORDER,
     UPDATE_ITEM,
     VIEW_ALL_CUSTOMERS,
-    VIEW_SINGLE_CUSTOMER
+    VIEW_CUSTOMER_BY_ID
 
 }

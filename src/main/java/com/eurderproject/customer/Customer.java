@@ -1,20 +1,18 @@
 package com.eurderproject.customer;
 
-import java.util.Objects;
-import java.util.UUID;
+import com.eurderproject.security.Role;
+import com.eurderproject.security.User;
 
-public class Customer {
-    private final UUID customerId;
+import java.util.Objects;
+
+public class Customer extends User {
     private String firstName;
     private String lastName;
     private String emailAddress;
     private String address;
     private String phoneNumber;
-    private String username;
-    private String password;
 
     public Customer(String firstName, String lastName, String emailAddress, String address, String phoneNumber) {
-        this.customerId = UUID.randomUUID();
         this.firstName = firstName;
         this.lastName = lastName;
         this.emailAddress = emailAddress;
@@ -22,19 +20,13 @@ public class Customer {
         this.phoneNumber = phoneNumber;
     }
 
-    public Customer(String firstName, String lastName, String emailAddress, String address, String phoneNumber, String username, String password) {
-        this.customerId = UUID.randomUUID();
+    public Customer(String username, String password, String firstName, String lastName, String emailAddress, String address, String phoneNumber) {
+        super(username, password, Role.CUSTOMER);
         this.firstName = firstName;
         this.lastName = lastName;
         this.emailAddress = emailAddress;
         this.address = address;
         this.phoneNumber = phoneNumber;
-        this.username = username;
-        this.password = password;
-    }
-
-    public UUID getCustomerId() {
-        return customerId;
     }
 
     public String getFirstName() {
@@ -57,31 +49,23 @@ public class Customer {
         return phoneNumber;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Customer customer = (Customer) o;
-        return Objects.equals(customerId, customer.customerId);
+        return Objects.equals(getUserId(), customer.getUserId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(customerId);
+        return Objects.hash(getUserId());
     }
 
     @Override
     public String toString() {
         return "Customer{" +
-                "customerId=" + customerId +
+                "customerId=" + getUserId() +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", emailAddress='" + emailAddress + '\'' +

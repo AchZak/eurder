@@ -1,8 +1,7 @@
 package com.eurderproject.security;
 
-
-import com.eurderproject.customer.CustomerRepository;
 import com.eurderproject.exception.UnauthorizedException;
+import com.eurderproject.exception.UserNotFoundException;
 import com.eurderproject.exception.WrongPasswordException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,47 +9,55 @@ import org.springframework.stereotype.Service;
 
 import java.util.Base64;
 
-import static java.lang.String.format;
 
-//@Service
+@Service
 public class SecurityService {
-/*
     private final Logger logger = LoggerFactory.getLogger(SecurityService.class);
-    private final CustomerRepository customerRepository;
 
-    public SecurityService(CustomerRepository customerRepository) {
-        this.customerRepository = customerRepository;
+    private final UserRepository userRepository;
+
+    public SecurityService(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
-    public SecurityService(CustomerRepository customerRepository) {
-        this.customerRepository = userRepository;
+    public User authenticate(String authorizationHeader) {
+        UserCredentials credentials = extractCredentials(authorizationHeader);
+        User user = findUserByUsername(credentials.username());
+        validatePassword(credentials.password(), user.getPassword());
+        logger.info("User authenticated: {}", user.getUsername());
+        return user;
     }
 
-    public void validateAuthorization(String authorization, Permission permission) {
-        UsernamePassword usernamePassword = getUsernamePassword(authorization);
-        User user = customerRepository.getUser(usernamePassword.getUsername());
-
-        if (user == null) {
-            logger.error(format("Unknown user %s", usernamePassword.getUsername()));
-            throw new UnknownUserException();
+    public void authorize(User user, Permission permission) {
+        if (!user.hasPermission(permission)) {
+            String errorMessage = String.format("User '%s' is not authorized to '%s' operation", user.getUsername(), permission);
+            logger.error(errorMessage);
+            throw new UnauthorizedException(errorMessage);
         }
-        if (!user.doesPasswordMatch(usernamePassword.getPassword())) {
-            logger.error(format("Password does not match for user %s", usernamePassword.getUsername()));
-            throw new WrongPasswordException();
-        }
-        if (!user.canHaveAccessTo(feature)) {
-            logger.error(format("User %s does not have access to %s", usernamePassword.getUsername(), feature));
-            throw new UnauthorizedException("");
-        }
-
+        logger.info("User authorized for '{}' operation: {}", permission, user.getUsername());
     }
 
+    private UserCredentials extractCredentials(String authorizationHeader) {
+        String decodedUserCredentials = new String(Base64.getDecoder().decode(authorizationHeader.substring("Basic ".length())));
+        String username = decodedUserCredentials.substring(0, decodedUserCredentials.indexOf(":"));
+        String password = decodedUserCredentials.substring(decodedUserCredentials.indexOf(":") + 1);
+        return new UserCredentials(username, password);
+    }
 
-    private UsernamePassword getUsernamePassword(String authorization) {
-        String decodedUsernameAndPassword = new String(Base64.getDecoder().decode(authorization.substring("Basic ".length())));
-        String username = decodedUsernameAndPassword.substring(0, decodedUsernameAndPassword.indexOf(":"));
-        String password = decodedUsernameAndPassword.substring(decodedUsernameAndPassword.indexOf(":") + 1);
-        return new UsernamePassword(username, password);
-    }*/
+    private User findUserByUsername(String username) {
+        return userRepository.findUserByUsername(username)
+                .orElseThrow(() -> {
+                    logger.error("User not found for username: " + username);
+                    return new UserNotFoundException("User not found");
+                });
+    }
 
+    private void validatePassword(String providedPassword, String actualPassword) {
+        if (!providedPassword.equals(actualPassword)) {
+            logger.error("Incorrect password for user");
+            throw new WrongPasswordException("Incorrect password");
+        }
+        logger.info("Password validated successfully");
+    }
 }
+
