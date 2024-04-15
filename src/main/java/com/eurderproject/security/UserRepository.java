@@ -3,10 +3,7 @@ package com.eurderproject.security;
 import com.eurderproject.customer.Customer;
 import org.springframework.stereotype.Repository;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Repository
 public class UserRepository {
@@ -14,8 +11,8 @@ public class UserRepository {
     private Admin admin;
     private Customer customer;
 
-    public UserRepository(Map<UUID, User> users) {
-        this.users = users;
+    public UserRepository() {
+        users = new HashMap<>();
         admin = new Admin("admin", "admin");
         users.put(admin.getUserId(), admin);
         customer = new Customer("mariokart",

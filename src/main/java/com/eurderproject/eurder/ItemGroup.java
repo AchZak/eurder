@@ -14,7 +14,6 @@ public class ItemGroup {
     public ItemGroup(UUID itemId, int amount) {
         this.itemId = itemId;
         this.amount = amount;
-        this.shippingDate = shippingDate;
     }
 
     public UUID getItemId() {

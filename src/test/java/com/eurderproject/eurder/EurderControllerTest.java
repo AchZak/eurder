@@ -1,5 +1,6 @@
 package com.eurderproject.eurder;
 
+import com.eurderproject.item.Item;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.apache.http.HttpStatus;
@@ -11,9 +12,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.annotation.DirtiesContext;
 
-
-import java.time.LocalDate;
-import java.util.Base64;
+import java.util.List;
+import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.http.ContentType.JSON;
@@ -29,72 +29,51 @@ class EurderControllerTest {
     @Autowired
     EurderService eurderService;
 
-
     @BeforeEach
     void setUp() {
-        CreateEurderDto createMemberDto = new CreateEurderDto(
-                "member",
-                5000
-                )
-
-        );
-        given()
-                .contentType(ContentType.JSON)
-                .baseUri("http://localhost")
-                .port(port)
-                .auth()
-                .preemptive()
-                .basic("admin@admin.com", "admin")
-                .body(createEurderDto)
-                .post("/users/members");
-
+        Item item1 = new Item("Smartphone", "High Tech Smartphone", 1000, 100);
+        Item item2 = new Item("Laptop", "High Tech Laptop", 5000, 50);
+        ItemGroup itemGroup1 = new ItemGroup(item1.getItemId(), 2);
+        ItemGroup itemGroup2 = new ItemGroup(item2.getItemId(),3);
+        List<ItemGroup> itemGroups = List.of(itemGroup1,itemGroup2);
+        Eurder eurder = new Eurder(UUID.randomUUID(),itemGroups);
         CreateEurderDto createEurderDto = new CreateEurderDto(
-                "librarian",
-                "librarian",
-                "librarian@email.com",
-                "password"
-
-        );
+                itemGroups,
+                17000);
         given()
                 .contentType(ContentType.JSON)
                 .baseUri("http://localhost")
                 .port(port)
                 .auth()
                 .preemptive()
-                .basic("admin@admin.com", "admin")
-                .body(createUserDto)
-                .post("/users/librarians");
+                .basic("mariokart", "trophy")
+                .body(createEurderDto)
+                .post("/eurders");
     }
 
     @Test
-    void shouldCreateEurder_givenValidRequest_ReturnsCreatedStatusAndTotalPrice() throws Exception {
-        // Mock your dependencies if needed
-        EurderService eurderServiceMock = Mockito.mock(EurderService.class);
-        Mockito.when(eurderServiceMock.createEurder(any(), any())).thenReturn(createMockEurderDto());
-
-        // Define the request body
-        CreateEurderDto requestDto = new CreateEurderDto(UUID.randomUUID(), UUID.randomUUID(), new ArrayList<>());
-
-        // Perform the request and validate the response
+    void shouldCreateEurder_givenValidRequest_ReturnsCreatedStatusAndTotalPrice(){
+        Item item1 = new Item("Smartphone", "High Tech Smartphone", 1000, 100);
+        Item item2 = new Item("Laptop", "High Tech Laptop", 5000, 50);
+        ItemGroup itemGroup1 = new ItemGroup(item1.getItemId(), 2);
+        ItemGroup itemGroup2 = new ItemGroup(item2.getItemId(),3);
+        List<ItemGroup> itemGroups = List.of(itemGroup1,itemGroup2);
+        Eurder eurder = new Eurder(UUID.randomUUID(),itemGroups);
         Response response = given()
                 .contentType(JSON)
                 .baseUri("http://localhost")
                 .port(port)
                 .auth()
                 .preemptive()
-                .basic("member@email.com", "password")
-                .body(LocalDate.of(2024,4,15))
+                .basic("admin", "admin")
                 .when()
-                .post("/lendings/isbn")
+                .post("/eurders")
                 .then()
                 .assertThat()
                 .statusCode(HttpStatus.SC_CREATED)
                 .extract()
                 .response();
 
-        Assertions.assertThat(response.as(LendingDto.class).dateDue()).isEqualTo(LocalDate.of(2024,4,15));
+        Assertions.assertThat(response.as(EurderService.class).calculateEurderPrice(eurder)).isEqualTo(17000);
     }
-    }
-
-
 }

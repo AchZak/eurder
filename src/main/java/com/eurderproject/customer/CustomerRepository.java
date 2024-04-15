@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 @Repository
 public class CustomerRepository {
     private final UserRepository userRepository;
-
     public CustomerRepository(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
